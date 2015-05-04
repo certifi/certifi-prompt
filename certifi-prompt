@@ -9,6 +9,7 @@ up-to-date with the current Mozilla bundle.
 """
 import subprocess
 import sys
+import time
 
 import requests
 
@@ -23,13 +24,13 @@ certifi = s.get(
     stream=True
 )
 if certifi.status_code != 200:
-    print "Failed to retrieve certifi bundle."
+    print time.strftime('%c') + " Failed to retrieve certifi bundle."
     sys.exit(1)
 
 # Now grab the bundle from mkcert.org.
 mkcert = s.get('https://mkcert.org/generate/', stream=True)
 if mkcert.status_code != 200:
-    print "Failed to retrieve mkcert bundle."
+    print time.strftime('%c') + " Failed to retrieve mkcert bundle."
     sys.exit(1)
 
 # Compare the two, line-by-line. It's easier than hashing them.
