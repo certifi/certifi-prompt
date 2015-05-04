@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+certifi-prompt
+~~~~~~~~~~~~~~
+
+A simple application that reports whether the current release of certifi is
+up-to-date with the current Mozilla bundle.
+"""
+import subprocess
+import sys
+
+import requests
+
+from itertools import izip
+
+s = requests.Session()
+
+# Grab the bundle in the current certifi master. For the moment, make sure that
+# we grab the mkcert bundle.
+certifi = s.get(
+    'https://raw.githubusercontent.com/certifi/python-certifi/master/certifi/mkcert.pem',
+    stream=True
+)
+if certifi.status_code != 200:
+    print "Failed to retrieve certifi bundle."
+    sys.exit(1)
+
+# Now grab the bundle from mkcert.org.
+mkcert = s.get('https://mkcert.org/generate/', stream=True)
+if mkcert.status_code != 200:
+    print "Failed to retrieve mkcert bundle."
+    sys.exit(1)
+
+# Compare the two, line-by-line. It's easier than hashing them.
+for c_line, m_line in izip(certifi.iter_lines(), mkcert.iter_lines()):
+    if c_line == m_line:
+        continue
+
+    # The two lines are different. Print a message to the terminal.
+    subprocess.check_call([
+        'terminal-notifier',
+        '-title certifi-prompt',
+        '-message "certifi is out of date"'
+    ])
+    break
+
+sys.exit(0)
