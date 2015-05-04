@@ -45,5 +45,7 @@ for c_line, m_line in izip(certifi.iter_lines(), mkcert.iter_lines()):
         '-message "certifi is out of date"'
     ])
     break
+else:
+    print time.strftime('%c') + " No update required"
 
 sys.exit(0)
