@@ -41,8 +41,10 @@ for c_line, m_line in izip(certifi.iter_lines(), mkcert.iter_lines()):
     # The two lines are different. Print a message to the terminal.
     subprocess.check_call([
         'terminal-notifier',
-        '-title certifi-prompt',
-        '-message "certifi is out of date"'
+        '-title',
+        'certifi-prompt',
+        '-message',
+        'certifi is out of date'
     ])
     break
 else:
